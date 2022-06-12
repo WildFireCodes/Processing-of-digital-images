@@ -1,0 +1,32 @@
+close all; clear; clc;
+
+a = zeros(240, 320, 3, 30, 'uint8');
+SE = strel('square', 7);
+
+for k = 1:30
+    if k < 11
+        x = 150 - round(150 * sqrt(3)/2/10) * k;
+        z = 235 - round(75/10) * k;
+
+    elseif k >= 11 && k < 21
+        x = 150 - round(150 * sqrt(3)/2) + round(150 * sqrt(3)/2/10) * (k - 10);
+        z = 160 - round(75/10) * (k - 10);
+    else
+        z = 85 + round(150/10) * (k - 20);
+    end
+
+a(x, z, 1, k) = round(255 - 255*(k)/30);
+a(x, z, 2, k) = round(0 - 255*(k)/30);
+a(x, z, 3, k) = round(255 - 255*(k)/30);
+
+a(:, :, :, k) = imdilate(a(:, :, :, k), SE);
+
+if k>1
+        a(:, :, :, k) = a(:, :, :, k) + a(:, :, :, k-1);
+    end
+end
+
+% a(150, 85, 1, 1) = 255;
+% a(150, 235, 1, 1) = 255;
+
+implay(a);
